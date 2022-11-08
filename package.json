@@ -9,7 +9,6 @@
     "client-install": "npm install --prefix client",
     "start": "node server.js",
     "client": "npm start --prefix client",
-    "heroku-postbuild": "npm install --prefix client && npm run build --prefix client",
     "install-clean": "rm -rf node_modules/ && rm  -rf package-lock.json && npm install && npm run dev"
   },
   "dependencies": {
