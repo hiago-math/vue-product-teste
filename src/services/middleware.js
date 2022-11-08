@@ -7,7 +7,7 @@ export default {
             .then(res => {
                 console.log(res)
                 if (res.data === 1) {
-                    this.$router.push('list')
+                    next()
                 }
                 this.$router.push('login')
             })
