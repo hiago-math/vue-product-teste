@@ -168,7 +168,7 @@ export default {
           .post('/auth/logout')
           .then(() => {
             Cookie.remove('_auth_app_token')
-            this.$router.push('login')
+            this.$router.push({name: 'login'})
           })
           .catch(() => {
             location.reload()
