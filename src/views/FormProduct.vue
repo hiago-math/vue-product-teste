@@ -140,17 +140,9 @@ export default {
 
       if (this.methodSave === "update") {
         api.put('product/' + this.$route.params.id, (payload))
-            .then(res => {
-              console.log(res)
-            })
-            .catch(error => { console.log(error)})
         this.showToast("success", "Sucesso!", "Produto Atualizado com suceso");
       } else {
         api.post('product', (payload))
-            .then(res => {
-              console.log(res)
-            })
-            .catch(error => { console.log(error)})
         this.showToast("success", "Sucesso!", "Tarefa criada com suceso");
       }
     },

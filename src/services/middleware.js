@@ -12,7 +12,7 @@ export default {
                 this.$router.push('login')
             })
             .catch(() => {
-                this.$router.push('list')
+                next('/list')
             })
     },
 }
