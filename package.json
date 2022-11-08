@@ -8,11 +8,9 @@
     "postinstall": "npm run build",
     "client-install": "npm install --prefix client",
     "start": "node server.js",
-    "server": "nodemon server.js",
     "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild":
-    "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "heroku-postbuild": "npm install --prefix client && npm run build --prefix client",
+    "install-clean": "rm -rf node_modules/ && rm  -rf package-lock.json && npm install && npm run dev"
   },
   "dependencies": {
     "axios": "^1.1.3",
