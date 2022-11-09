@@ -1,5 +1,5 @@
 <template>
-  <div class="gradient-custom">
+  <div class="gradient-custom" @change="getProducts">
     <b-navbar toggleable="lg" type="dark" variant="dark">
       <b-navbar-brand href="#">App Products</b-navbar-brand>
 
@@ -112,7 +112,7 @@ export default {
     };
   },
 
-  async created() {
+  async mounted() {
     this.products = await this.getProducts();
   },
 

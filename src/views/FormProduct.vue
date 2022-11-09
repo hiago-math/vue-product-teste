@@ -139,8 +139,9 @@ export default {
       }
 
       if (this.methodSave === "update") {
-        api.put('product/' + this.$route.params.id, (payload))
+        api.post('product/' + this.$route.params.id, (payload))
         this.showToast("success", "Sucesso!", "Produto Atualizado com suceso");
+        this.$router.push('list');
       } else {
         api.post('product', (payload))
         this.showToast("success", "Sucesso!", "Tarefa criada com suceso");
@@ -154,6 +155,9 @@ export default {
               .then((res) => {
                 return res.data.response
               }).catch((error) => {
+                if (error.response.status === 401) {
+                  Cookie.remove('_auth_app_token')
+                }
             console.log(error)
           })
     },
