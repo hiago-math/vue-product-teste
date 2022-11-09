@@ -5,7 +5,8 @@ export default {
                 title: title,
                 autoHideDelay: 3000,
                 variant: variant,
-                solid: true
+                solid: true,
+                confirm: true
             });
         }
     }

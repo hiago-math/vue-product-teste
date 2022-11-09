@@ -1,18 +1,14 @@
-import api from '@/router/api'
+import Cookie from 'js-cookie'
 
 export default {
 
     auth(to, from, next) {
-        api.get('/auth/hasToken')
-            .then(res => {
-                console.log(res)
-                if (res.data === 1) {
-                    next()
-                }
-                this.$router.push('login')
-            })
-            .catch(() => {
-                this.$router.push('list')
-            })
+        const token = Cookie.get('_auth_app_token');
+
+        if (!token) {
+            next('/')
+        }
+
+        next()
     },
 }
