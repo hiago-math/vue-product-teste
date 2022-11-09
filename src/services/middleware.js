@@ -5,8 +5,9 @@ export default {
 
     auth(to, from, next) {
         api.get('/auth/hasToken')
-            .catch(() => {
+            .catch((err) => {
                 Cookie.remove('_auth_app_token')
+                next('/')
             })
 
         const token = Cookie.get('_auth_app_token');
@@ -17,4 +18,8 @@ export default {
 
         next()
     },
+
+    redirectToList(to, from, next) {
+        next('list')
+    }
 }

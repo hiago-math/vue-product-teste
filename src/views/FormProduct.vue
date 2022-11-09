@@ -23,7 +23,7 @@
             <template #button-content>
               <em>Usuario</em>
             </template>
-            <b-dropdown-item @click="logout">Sign Out</b-dropdown-item>
+            <b-dropdown-item @click="logout">Deslogar</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -32,7 +32,7 @@
       <h1>Cadastro de produtos</h1>
     </b-card-header>
     <div class="container mt-2">
-      <b-form>
+      <b-form >
         <b-form-group label="Nome:" label-for="name" class="mt-2" label-size="lg">
           <b-form-input
               id="name"
@@ -42,14 +42,15 @@
               required
               autocomplete="off"
               size="lg"
+              @change="isProductEmpty"
           ></b-form-input>
 
           <b-form-invalid-feedback id="name-feedback">Campo obrigatório.</b-form-invalid-feedback>
         </b-form-group>
 
         <b-form-group label="Categoria:" label-for="category" class="mt-2" label-size="lg">
-          <b-form-select v-model="form.category.selected" class="mb-2" style="width: 500px" select-size="6" required>
-            <b-form-select-option :value="null" disabled>-- SELECIONE UM --</b-form-select-option>
+          <b-form-select v-model="form.category.selected" class="mb-2" style="width: 500px" select-size="6" @change="isProductEmpty">
+            <b-form-select-option @change="isProductEmpty" :value="null" disabled>-- SELECIONE UM --</b-form-select-option>
             <option v-for="option in form.category.options" :value="option.id">{{ option.name }}</option>
           </b-form-select>
           <b-form-invalid-feedback id="image-feedback">Campo obrigatório.</b-form-invalid-feedback>
@@ -69,9 +70,11 @@
         </b-form-group>
 
         <b-button
+            id="btnSalvar"
+            mae="btnSalvar"
             type="submit"
             variant="outline-primary"
-            @click="saveTask"
+            @click="saveProduct"
         > Salvar
         </b-button>
       </b-form>
@@ -95,14 +98,14 @@ export default {
     return {
       form: {
         file: null,
-        name: "",
+        name: null,
         image: null,
         category: {
           selected: null,
           options: {}
         }
       },
-      methodSave: "new"
+      methodSave: "new",
     }
   },
 
@@ -132,7 +135,8 @@ export default {
   },
 
   methods: {
-    saveTask() {
+    saveProduct() {
+      let id = "1"
       let payload = {
         name: this.form.name,
         category_id: this.form.category.selected,
@@ -140,14 +144,21 @@ export default {
       }
 
       if (this.methodSave === "update") {
-        api.post('product/' + this.$route.params.id, (payload))
-        this.showToast("success", "Sucesso!", "Produto atualizado com sucesso");
+        id = this.$route.params.id
+        api.post('product/' + id, (payload)).then(() => {
+          this.showToast("success", "Sucesso!", "Produto atualizado com sucesso");
+        }).catch(() => {
+          this.$router.push({name: "internalError"});
+        })
       } else {
-        api.post('product', (payload))
-        this.showToast("success", "Sucesso!", "Produto criada com sucesso");
+        api.post('product', (payload)).then(() => {
+          this.showToast("success", "Sucesso!", "Produto criada com sucesso");
+        }).catch(() => {
+          this.$router.push({name: "internalError"});
+        })
       }
+      this.$router.push({name: "list", params: {id}});
 
-      this.$router.push('list')
     },
 
     async getCategories() {
@@ -157,9 +168,9 @@ export default {
               .then((res) => {
                 return res.data.response
               }).catch((error) => {
-                if (error.response.status === 401) {
-                  Cookie.remove('_auth_app_token')
-                }
+            if (error.response.status === 401) {
+              Cookie.remove('_auth_app_token')
+            }
             console.log(error)
           })
     },
@@ -167,6 +178,13 @@ export default {
     onChange() {
       let formData = new FormData();
       formData.append('image', this.form.image);
+    },
+
+    isProductEmpty() {
+      if (this.form.category.selected !== null && this.form.name !== null) {
+        console.log('entrouuu')
+        document.getElementById("btnSalvar").removeAttribute("disabled")
+      }
     },
 
     logout() {
@@ -181,15 +199,5 @@ export default {
           })
     },
   },
-
-  computed: {
-    getValidation() {
-      if (this.$v.form.subject.$dirty === false) {
-        return null;
-      }
-
-      return !this.$v.form.subject.$error;
-    }
-  }
 }
 </script>

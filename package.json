@@ -3,13 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --watch",
     "build": "vue-cli-service build",
     "postinstall": "npm run build",
     "client-install": "npm install --prefix client",
     "start": "node server.js",
     "client": "npm start --prefix client",
-    "install-clean": "rm -rf node_modules/ && rm  -rf package-lock.json && npm install && npm run dev"
+    "install-clean": "rm -rf node_modules/ && rm  -rf package-lock.json && npm install && npm run dev",
+    "watch": "npm run development --watch",
+    "watch-poll": "npm run watch --watch-poll"
   },
   "dependencies": {
     "axios": "^1.1.3",

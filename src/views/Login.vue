@@ -18,14 +18,14 @@
 
                 <div class="form-outline form-white mb-4">
                   <input v-model="password" type="password" id="typePasswordX" class="form-control form-control-lg" />
-                  <label class="form-label" for="typePasswordX">Password</label>
+                  <label class="form-label" for="typePasswordX">Senha</label>
                 </div>
-                <button class="btn btn-outline-light btn-lg px-5" type="submit" @click="login">Login</button>
+                <button class="btn btn-outline-light btn-lg px-5" type="submit" @click="login">Acessar</button>
 
               </div>
               <b-modal ref="modalError" hide-footer title="Erro com o Login">
                 <div class="d-block text-center">
-                  Senha ou usuario incorreto
+                  Email ou senha incorreto
                 </div>
                 <div class="mt-3 d-flex justify-content-end">
                   <b-button variant="outline-secondary" class="mr-2" @click="hideModal">
@@ -51,26 +51,31 @@ export default {
 
   data() {
     return {
+      loading: true,
       email: "",
       password: "",
     }
   },
 
   methods: {
-    login() {
+    async login() {
       const payload = {
         email: this.email,
         password: this.password
       }
-      api
+      await api
           .post('/auth/login', (payload))
           .then(resp => {
-            Cookie.set('_auth_app_token', resp.data.access_token, { expires: resp.data.expire_in })
-            this.$router.push('list')
+            Cookie.set('_auth_app_token', resp.data.access_token, {expires: resp.data.expire_in})
           })
           .catch(() => {
             this.$refs.modalError.show();
           })
+          .finally(() => {
+            this.loading = false
+          })
+
+      await this.$router.push('list')
     },
 
     hideModal() {

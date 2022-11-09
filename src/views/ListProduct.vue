@@ -23,7 +23,7 @@
             <template #button-content>
               <em>Usuario</em>
             </template>
-            <b-dropdown-item @click="logout">Sign Out</b-dropdown-item>
+            <b-dropdown-item @click="logout">Deslogar</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -39,7 +39,7 @@
               variant="outline-primary"
               class="mt-2"
               size="lg"
-              to="/form"
+              to="/create"
           > Criar produto
           </b-button>
         </div>
@@ -87,7 +87,7 @@
           </b-button>
           <b-button
               variant="outline-danger"
-              class="mr-2"
+              style="margin-left: 5px"
               @click="confirmRemoveProduct(productSelected.id)"
           >
             Excluir
@@ -107,13 +107,23 @@ export default {
 
   data() {
     return {
-      products: {},
+      loading: true,
+      products: [],
       productSelected: [],
+      methodSave: "new"
     };
   },
 
+  created() {
+    if (this.$route.params.id) {
+      this.getProducts()
+    }
+  },
+
   async mounted() {
-    this.products = await this.getProducts();
+    await this.getProducts().finally(() => {
+      this.getProducts()
+    })
   },
 
   methods: {
@@ -136,16 +146,20 @@ export default {
     },
 
     async getProducts() {
-      return await
-          api
-              .get('product/all')
-              .then((res) => {
-                return res.data.response
-              })
-              .catch((error) => {
-                location.reload()
-                console.log(error)
-              })
+      return api
+          .get('product/all')
+          .then((res) => {
+            this.products = res.data.response
+          })
+          .catch((error) => {
+            if (error.response.status === 401) {
+              Cookie.remove('_auth_app_token')
+            }
+            console.log(error)
+          })
+          .finally(() => {
+            this.loading = false
+          })
     },
 
     async remove(id, name) {
@@ -161,7 +175,7 @@ export default {
       this.$refs.modalRemove.hide();
     },
 
-    deleteUser(id) {
+    deleteProduct(id) {
       api
           .delete("product/" + id).then((res) => {
         return res
@@ -169,7 +183,7 @@ export default {
     },
 
     async confirmRemoveProduct(id) {
-      this.deleteUser(id)
+      this.deleteProduct(id)
       this.products = await this.getProducts();
       this.hideModal();
       location.reload()
@@ -178,7 +192,7 @@ export default {
 
   computed: {
     isProductEmpty() {
-      return this.products === [];
+      return this.products.length === 0;
     },
   },
 };
