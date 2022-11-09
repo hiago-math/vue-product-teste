@@ -13,8 +13,8 @@
             <template #button-content>
               <em>Ações</em>
             </template>
-            <b-dropdown-item to="/list">Lista de Produtos</b-dropdown-item>
-            <b-dropdown-item to="/create">Cadastro de Produtos</b-dropdown-item>
+            <b-dropdown-item id="list" to="/list">Lista de Produtos</b-dropdown-item>
+            <b-dropdown-item id="crete" to="/create">Cadastro de Produtos</b-dropdown-item>
           </b-nav-item-dropdown>
 
 
@@ -84,6 +84,7 @@ import api from "@/router/api";
 import ToastMixin from "@/mixins/toastMixin.js";
 import {required, minLength} from "vuelidate/lib/validators";
 import Cookie from "js-cookie";
+import list from "@/views/ListProduct"
 
 export default {
 
@@ -140,12 +141,13 @@ export default {
 
       if (this.methodSave === "update") {
         api.post('product/' + this.$route.params.id, (payload))
-        this.showToast("success", "Sucesso!", "Produto Atualizado com suceso");
-        this.$router.push('list');
+        this.showToast("success", "Sucesso!", "Produto atualizado com sucesso");
       } else {
         api.post('product', (payload))
-        this.showToast("success", "Sucesso!", "Tarefa criada com suceso");
+        this.showToast("success", "Sucesso!", "Produto criada com sucesso");
       }
+
+      this.$router.push('list')
     },
 
     async getCategories() {
